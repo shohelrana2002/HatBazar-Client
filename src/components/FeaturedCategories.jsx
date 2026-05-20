@@ -102,7 +102,7 @@ const FeaturedCategories = () => {
           ))}
         </div>
 
-        {/*   side  RIGHT */}
+        {/*   side  RIGHT // */}
         {canScroll && (
           <button
             onClick={scrollRight}
