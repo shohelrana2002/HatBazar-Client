@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/immutability */
 import { useEffect, useRef } from "react";
+import Title from "../shared/Title";
 
 const brands = [
   { id: 1, name: "Nestle", logo: "https://picsum.photos/200?1" },
@@ -85,7 +86,7 @@ const OurBrands = () => {
 
   return (
     <div className="container mx-auto px-3 my-10">
-      <h2 className="text-xl md:text-2xl font-bold mb-6">Our Brands</h2>
+      <Title title={"Our Brands"} to={"/seeAllBrands"} toTitle={"See Alls"} />
 
       <div
         ref={scrollRef}

@@ -4,7 +4,18 @@ import Banner from "../components/Banner";
 import FeaturedCategories from "../components/FeaturedCategories";
 import TopSellingProducts from "../components/TopSellingProducts";
 import OurBrands from "../components/OurBrands";
-//dsd
+import Honey from "../components/Honey";
+import ComboDeals from "../components/ComboDeals";
+import MangoPreOrder from "../components/MangoPreOrder";
+import PremiumDates from "../components/PremiumDates";
+import banner1 from "./../assets/banner/banner1.jpg";
+import banner2 from "./../assets/banner/banner1.png";
+import CookingEssentials from "../components/CookingEssentials";
+import OrganicCertified from "../components/OrganicCertified";
+import AllProducts from "../components/AllProducts";
+import CustomerReview from "../components/CustomerReview";
+import FloatingCart from "../shared/FloatingCart ";
+
 const Home = () => {
   return (
     <div>
@@ -17,6 +28,39 @@ const Home = () => {
         <TopSellingProducts />
       </div>
       <OurBrands />
+      <div className="container mt-5 mx-auto">
+        <Honey />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <ComboDeals />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <MangoPreOrder />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <PremiumDates />
+      </div>
+      {/* Banner Image */}
+      <div className="container mt-5 mx-auto">
+        <img
+          className="w-full h-full rounded-2xl p-2"
+          src={banner1}
+          alt={banner2}
+        />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <CookingEssentials />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <OrganicCertified />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <AllProducts />
+      </div>
+      <div className="container mt-5 mx-auto">
+        <CustomerReview />
+      </div>
+      <FloatingCart />
     </div>
   );
 };

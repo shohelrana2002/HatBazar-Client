@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
+import Title from "../shared/Title";
 
 const data = [
   {
@@ -43,10 +44,11 @@ const data = [
 const TopSellingProducts = () => {
   return (
     <div className="container mx-auto px-3 my-10">
-      <h2 className="text-xl md:text-2xl font-bold mb-6">
-        Top Selling Products
-      </h2>
-
+      <Title
+        title={"Top Selling Products"}
+        to={"/toSeeling"}
+        toTitle={"Top Seeling"}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {data.map((item) => {
           const save = item.offeredPrice && item.price - item.offeredPrice;
