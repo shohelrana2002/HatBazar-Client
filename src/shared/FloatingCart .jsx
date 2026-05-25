@@ -27,7 +27,7 @@ const FloatingCart = () => {
           open ? "visible bg-black/40 opacity-100" : "invisible opacity-0"
         }`}
       >
-        {/* Sidebar Cart */}
+        {/* Sidebar Cart show */}
         <div
           className={`absolute right-0 top-0 h-full w-full bg-white shadow-2xl transition-all duration-500 sm:w-105 ${
             open ? "translate-x-0" : "translate-x-full"
