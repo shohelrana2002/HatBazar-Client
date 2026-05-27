@@ -7,8 +7,11 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/features/cart/cartSlice";
 
 const ProductSlider = ({ products }) => {
+  const dispatch = useDispatch();
   return (
     <div className="py-8">
       <Swiper
@@ -118,7 +121,10 @@ const ProductSlider = ({ products }) => {
                 </div>
 
                 {/* Button */}
-                <button className="btn btn-warning  mt-4 w-full rounded-xl text-white hover:scale-[1.01]">
+                <button
+                  onClick={() => dispatch(addToCart(product))}
+                  className="btn btn-warning  mt-4 w-full rounded-xl text-white hover:scale-[1.01]"
+                >
                   Add To Cart
                 </button>
               </div>

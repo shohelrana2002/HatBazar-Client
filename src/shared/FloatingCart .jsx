@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { FaShoppingCart, FaTimes } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  decreaseQuantity,
+  increaseQuantity,
+  removeCart,
+} from "../redux/features/cart/cartSlice";
 
 const FloatingCart = () => {
   const [open, setOpen] = useState(false);
-
+  const { carts } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const totalPrice = carts.reduce(
+    (total, item) => total + item.offeredPrice * item.quantity,
+    0,
+  );
   return (
     <>
       {/* Floating Button */}
@@ -16,7 +27,7 @@ const FloatingCart = () => {
 
           {/* Cart Count */}
           <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black text-xs font-bold text-white">
-            3
+            {carts?.length}
           </span>
         </button>
       </div>
@@ -38,7 +49,7 @@ const FloatingCart = () => {
             <div>
               <h2 className="text-2xl font-bold">Shopping Cart</h2>
 
-              <p className="text-sm text-gray-500">3 Items</p>
+              <p className="text-sm text-gray-500">{carts?.length}</p>
             </div>
 
             <button
@@ -50,87 +61,71 @@ const FloatingCart = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="space-y-4 overflow-y-auto p-5 h-[calc(100%-180px)]">
-            {/* Item */}
-            <div className="flex gap-4 rounded-2xl border border-base-300 p-3">
-              <img
-                src="https://picsum.photos/120?1"
-                alt=""
-                className="h-24 w-24 rounded-xl object-cover"
-              />
+          <div className="h-[calc(100%-180px)] space-y-4 overflow-y-auto p-5">
+            {carts?.map((cart) => (
+              <div
+                key={cart?.id}
+                className="flex gap-4 rounded-2xl border border-base-300 p-3"
+              >
+                {/* Image */}
+                <img
+                  src={cart?.image}
+                  alt={cart?.name}
+                  className="h-24 w-24 rounded-xl object-cover"
+                />
 
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <h3 className="line-clamp-1 text-lg font-semibold">
-                    Premium Honey
-                  </h3>
+                {/* Content */}
+                <div className="flex flex-1 flex-col justify-between">
+                  {/* Name */}
+                  <div>
+                    <h3 className="line-clamp-1 text-lg font-semibold">
+                      {cart?.name}
+                    </h3>
 
-                  <p className="text-sm text-gray-500">Qty: 1</p>
-                </div>
+                    <p className="mt-1 text-sm text-gray-500">
+                      ৳ {cart?.offeredPrice || cart?.price}
+                    </p>
+                  </div>
 
-                <div className="flex items-center justify-between">
-                  <p className="font-bold text-orange-500">৳ 850</p>
+                  {/* Bottom */}
+                  <div className="mt-3 flex items-center justify-between">
+                    {/* Quantity */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        disabled={cart?.quantity === 1}
+                        onClick={() => dispatch(decreaseQuantity(cart?.id))}
+                        className={`flex h-8 w-8 items-center justify-center rounded-lg text-lg font-bold transition-all duration-300 ${
+                          cart?.quantity === 1
+                            ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                            : "bg-base-200 hover:bg-orange-500 hover:text-white"
+                        }`}
+                      >
+                        -
+                      </button>
 
-                  <button className="text-sm text-red-500 hover:underline">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
+                      <span className="min-w-5 text-center font-semibold">
+                        {cart?.quantity}
+                      </span>
 
-            {/* Item */}
-            <div className="flex gap-4 rounded-2xl border border-base-300 p-3">
-              <img
-                src="https://picsum.photos/120?2"
-                alt=""
-                className="h-24 w-24 rounded-xl object-cover"
-              />
+                      <button
+                        onClick={() => dispatch(increaseQuantity(cart?.id))}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-base-200 text-lg font-bold hover:bg-orange-500 hover:text-white"
+                      >
+                        +
+                      </button>
+                    </div>
 
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <h3 className="line-clamp-1 text-lg font-semibold">
-                    Organic Mango Box
-                  </h3>
-
-                  <p className="text-sm text-gray-500">Qty: 2</p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <p className="font-bold text-orange-500">৳ 2200</p>
-
-                  <button className="text-sm text-red-500 hover:underline">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Item */}
-            <div className="flex gap-4 rounded-2xl border border-base-300 p-3">
-              <img
-                src="https://picsum.photos/120?3"
-                alt=""
-                className="h-24 w-24 rounded-xl object-cover"
-              />
-
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <h3 className="line-clamp-1 text-lg font-semibold">
-                    Premium Khejur
-                  </h3>
-
-                  <p className="text-sm text-gray-500">Qty: 1</p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <p className="font-bold text-orange-500">৳ 1450</p>
-
-                  <button className="text-sm text-red-500 hover:underline">
-                    Remove
-                  </button>
+                    {/* Remove */}
+                    <button
+                      onClick={() => dispatch(removeCart(cart?.id))}
+                      className="text-sm font-medium cursor-pointer text-red-500 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
 
           {/* Footer */}
@@ -138,7 +133,9 @@ const FloatingCart = () => {
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-xl font-bold">Total</h3>
 
-              <p className="text-2xl font-black text-orange-500">৳ 4500</p>
+              <p className="text-2xl font-black text-orange-500">
+                ৳ {totalPrice}
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
