@@ -1,21 +1,20 @@
 import "react";
-import SubNav from "../components/SubNav";
-import Banner from "../components/Banner";
-import FeaturedCategories from "../components/FeaturedCategories";
-import TopSellingProducts from "../components/TopSellingProducts";
-import OurBrands from "../components/OurBrands";
-import Honey from "../components/Honey";
-import ComboDeals from "../components/ComboDeals";
-import MangoPreOrder from "../components/MangoPreOrder";
-import PremiumDates from "../components/PremiumDates";
-import banner1 from "./../assets/banner/banner1.jpg";
-import banner2 from "./../assets/banner/banner1.png";
-import CookingEssentials from "../components/CookingEssentials";
-import OrganicCertified from "../components/OrganicCertified";
-import AllProducts from "../components/AllProducts";
-import CustomerReview from "../components/CustomerReview";
-import FloatingCart from "../shared/FloatingCart ";
-
+import FeaturedCategories from "../../components/FeaturedCategories";
+import SubNav from "../../components/SubNav";
+import Banner from "../../components/Banner";
+import TopSellingProducts from "../../components/TopSellingProducts";
+import OurBrands from "../../components/OurBrands";
+import Honey from "../../components/Honey";
+import ComboDeals from "../../components/ComboDeals";
+import MangoPreOrder from "../../components/MangoPreOrder";
+import PremiumDates from "../../components/PremiumDates";
+import CookingEssentials from "../../components/CookingEssentials";
+import OrganicCertified from "../../components/OrganicCertified";
+import AllProducts from "../../components/AllProducts";
+import CustomerReview from "../../components/CustomerReview";
+import FloatingCart from "../../shared/FloatingCart ";
+import banner1 from "../../assets/banner/banner1.jpg";
+import banner2 from "../../assets/banner/banner1.png";
 const Home = () => {
   return (
     <div>

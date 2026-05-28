@@ -1,47 +1,27 @@
 import { Link } from "react-router-dom";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import Title from "../shared/Title";
-
-const data = [
-  {
-    id: 1,
-    name: "Sundarban Honey",
-    to: "/honey",
-    image: "https://picsum.photos/300?1",
-    price: 290,
-    offeredPrice: 200,
-    selling: { bestSelling: true, offered: true },
-  },
-  {
-    id: 2,
-    name: "Mustard Oil",
-    to: "/oil",
-    image: "https://picsum.photos/300?2",
-    price: 350,
-    offeredPrice: null,
-    selling: { bestSelling: true, offered: false },
-  },
-  {
-    id: 3,
-    name: "Deshi Ghee",
-    to: "/ghee",
-    image: "https://picsum.photos/300?3",
-    price: 600,
-    offeredPrice: 500,
-    selling: { bestSelling: false, offered: true },
-  },
-  {
-    id: 4,
-    name: "Organic Turmeric",
-    to: "/spices",
-    image: "https://picsum.photos/300?4",
-    price: 200,
-    offeredPrice: 150,
-    selling: { bestSelling: true, offered: true },
-  },
-];
+import { useEffect, useState } from "react";
+import axiosPublic from "../api/axiosPublic";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/features/cart/cartSlice";
 
 const TopSellingProducts = () => {
+  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const { data } = await axiosPublic.get("/api/products/best-selling");
+        console.log(data);
+        setData(data?.products || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetch();
+  }, []);
+
   return (
     <div className="container mx-auto px-3 my-10">
       <Title
@@ -50,7 +30,7 @@ const TopSellingProducts = () => {
         toTitle={"Top Seeling"}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {data.map((item) => {
+        {data?.slice(0, 4).map((item) => {
           const save = item.offeredPrice && item.price - item.offeredPrice;
 
           const percent =
@@ -58,7 +38,7 @@ const TopSellingProducts = () => {
 
           return (
             <div
-              key={item.id}
+              key={item._id}
               className="bg-white rounded shadow hover:shadow-lg transition group relative flex flex-col lg:flex-row"
             >
               {/* 🔥 Badge */}
@@ -112,7 +92,7 @@ const TopSellingProducts = () => {
                     )}
                   </div>
 
-                  {/* 🔥 Save */}
+                  {/*  Save */}
                   {item.offeredPrice && (
                     <span className="text-xs text-red-500">
                       Save ৳{save} ({percent}% OFF)
@@ -123,7 +103,10 @@ const TopSellingProducts = () => {
                 {/* 🛒 Buttons */}
                 <div className="mt-1 flex gap-1">
                   {/* Add to Cart */}
-                  <button className="flex-1 border border-orange-400 hover:bg-orange-400 text-orange-400 cursor-pointer text-or py-1 hover:text-white rounded flex items-center justify-center gap-2 text-[16.7px]">
+                  <button
+                    onClick={() => dispatch(addToCart(item))}
+                    className="flex-1 border border-orange-400 hover:bg-orange-400 text-orange-400 cursor-pointer text-or py-1 hover:text-white rounded flex items-center justify-center gap-2 text-[16.7px]"
+                  >
                     <FaShoppingCart />
                     Cart
                   </button>

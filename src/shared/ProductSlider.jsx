@@ -44,11 +44,11 @@ const ProductSlider = ({ products }) => {
         className="pb-14"
       >
         {products?.map((product) => (
-          <SwiperSlide key={product.id}>
+          <SwiperSlide key={product._id}>
             <div className="group relative mb-6 h-full overflow-hidden rounded-2xl border border-base-300 bg-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
               {/* Offered Badge */}
               {product?.selling?.offered && (
-                <div className="absolute left-3 top-3 z-20 rounded-full bg-orange-500 px-3 py-1 text-xs font-medium text-white shadow">
+                <div className="absolute left-3 top-44 z-20 rounded-full bg-orange-500 px-3 py-1 text-xs font-medium text-white shadow">
                   offered SALE
                 </div>
               )}
@@ -72,7 +72,7 @@ const ProductSlider = ({ products }) => {
               )}
 
               {/* Image */}
-              <Link to={product.to}>
+              <Link to={product._id}>
                 <figure className="overflow-hidden bg-base-200">
                   <img
                     src={product.image}

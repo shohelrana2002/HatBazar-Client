@@ -6,6 +6,7 @@ import {
   increaseQuantity,
   removeCart,
 } from "../redux/features/cart/cartSlice";
+import { Link } from "react-router";
 
 const FloatingCart = () => {
   const [open, setOpen] = useState(false);
@@ -139,13 +140,19 @@ const FloatingCart = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <button className="btn rounded-xl border-none bg-base-200">
+              <Link
+                to={"/cart"}
+                className="btn rounded-xl cursor-pointer border-none bg-base-200"
+              >
                 View Cart
-              </button>
+              </Link>
 
-              <button className="btn rounded-xl border-none bg-orange-500 text-white hover:bg-orange-600">
+              <Link
+                to={"/checkOut"}
+                className="btn rounded-xl border-none bg-orange-500 text-white hover:bg-orange-600"
+              >
                 Checkout
-              </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -11,11 +11,12 @@ import {
   FaBars,
   FaLocationArrow,
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
-
+  const { carts } = useSelector((state) => state.cart);
   return (
     <div className="shadow-md bg-white">
       <div className="container mx-auto px-2">
@@ -76,7 +77,7 @@ const Navbar = () => {
             <Link to="/cart" className="flex flex-col items-center relative">
               <FaShoppingCart />
               <span className="absolute -top-3 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
-                2
+                {carts?.length}
               </span>
               <span className="hidden md:block">Cart</span>
             </Link>
