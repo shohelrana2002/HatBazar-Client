@@ -13,7 +13,7 @@ const TopSellingProducts = () => {
     const fetch = async () => {
       try {
         const { data } = await axiosPublic.get("/api/products/best-selling");
-        console.log(data);
+
         setData(data?.products || []);
       } catch (error) {
         console.log(error);
@@ -68,14 +68,14 @@ const TopSellingProducts = () => {
                 />
               </Link>
 
-              {/* 📦 Content */}
+              {/*  Content */}
               <div className="p-3 flex flex-col justify-between lg:w-2/3">
                 {/* 🔹 Title */}
                 <h3 className="text-sm md:text-base font-medium">
                   {item.name}
                 </h3>
 
-                {/* 💰 Price */}
+                {/*  Price */}
                 <div className="mt-1 flex flex-col gap-1">
                   <div className="flex items-center gap-1">
                     {item.offeredPrice ? (

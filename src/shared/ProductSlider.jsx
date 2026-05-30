@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { FaCartPlus, FaEye } from "react-icons/fa";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,11 +7,23 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/features/cart/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  decreaseQuantity,
+  increaseQuantity,
+} from "../redux/features/cart/cartSlice";
 
 const ProductSlider = ({ products }) => {
+  const navigate = useNavigate();
+  const { carts } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
+  if (!products?.length) {
+    return (
+      <div className="py-10 text-center text-gray-500">No Products Found</div>
+    );
+  }
   return (
     <div className="py-8">
       <Swiper
@@ -43,94 +55,140 @@ const ProductSlider = ({ products }) => {
         }}
         className="pb-14"
       >
-        {products?.map((product) => (
-          <SwiperSlide key={product._id}>
-            <div className="group relative mb-6 h-full overflow-hidden rounded-2xl border border-base-300 bg-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-              {/* Offered Badge */}
-              {product?.selling?.offered && (
-                <div className="absolute left-3 top-44 z-20 rounded-full bg-orange-500 px-3 py-1 text-xs font-medium text-white shadow">
-                  offered SALE
-                </div>
-              )}
-              {/* combo Badge */}
-              {product?.badge && (
-                <div className="absolute left-3 top-3 z-20 rounded-full bg-orange-500 px-3 py-1 text-xs font-medium text-white shadow">
-                  {product?.badge}
-                </div>
-              )}
-              {/* Best Selling Badge */}
-              {product?.selling?.bestSelling && (
-                <div className="absolute right-3 top-3 z-20 rounded-full bg-green-500 px-3 py-1 text-xs font-bold text-white shadow">
-                  BEST
-                </div>
-              )}
-              {/*saving Badge */}
-              {product?.save && (
-                <div className="absolute right-3 top-3 z-20 rounded-full bg-green-500 px-3 py-1 text-xs font-bold text-white shadow">
-                  Save {product?.save}%
-                </div>
-              )}
+        {products?.map((product) => {
+          const cartItem = carts.find((item) => item._id === product._id);
+          return (
+            <SwiperSlide key={product?._id}>
+              <div className="group relative mb-6 h-full overflow-hidden rounded-2xl border border-base-300 bg-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                {/* Offered Badge */}
+                {product?.selling?.offered && (
+                  <div className="absolute bottom-40 left-3 z-20 rounded-full bg-orange-500 px-3 py-1 text-xs font-medium text-white shadow">
+                    offered SALE
+                  </div>
+                )}
+                {/* combo Badge */}
+                {product?.badge && (
+                  <div className="absolute left-3 top-3 z-20 rounded-full bg-orange-500 px-3 py-1 text-xs font-medium text-white shadow">
+                    {product?.badge}
+                  </div>
+                )}
+                {/* Best Selling Badge */}
+                {product?.selling?.bestSelling && (
+                  <div className="absolute right-3 top-3 z-20 rounded-full bg-green-500 px-3 py-1 text-xs font-bold text-white shadow">
+                    BEST
+                  </div>
+                )}
+                {/*saving Badge */}
+                {product?.save && (
+                  <div className="absolute right-3 top-3 z-20 rounded-full bg-green-500 px-3 py-1 text-xs font-bold text-white shadow">
+                    Save {product?.save}%
+                  </div>
+                )}
 
-              {/* Image */}
-              <Link to={product._id}>
-                <figure className="overflow-hidden bg-base-200">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </figure>
-              </Link>
-
-              {/* Action Buttons */}
-              <div className="absolute right-3 top-20 flex translate-x-16 flex-col gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-                <button className="btn btn-circle btn-sm border-none bg-white text-black shadow hover:bg-orange-500 hover:text-white">
-                  <FaEye />
-                </button>
-
-                <button className="btn btn-circle btn-sm border-none bg-white text-black shadow hover:bg-orange-500 hover:text-white">
-                  <FaCartPlus />
-                </button>
-              </div>
-
-              {/* Content */}
-              <div className="p-2">
-                <Link to={product.to}>
-                  <h2 className="line-clamp-1 text-lg font-semibold transition-colors duration-300 hover:text-orange-500">
-                    {product.name}
-                  </h2>
+                {/* Image */}
+                <Link to={`/product/${product._id}`}>
+                  <figure className="overflow-hidden bg-base-200">
+                    <img
+                      loading="lazy"
+                      src={product.image}
+                      alt={product.name}
+                      className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </figure>
                 </Link>
 
-                {/* Price */}
-                <div className="mt-3 flex items-center gap-2">
-                  {product.offeredPrice ? (
-                    <>
-                      <span className="text-xl font-bold text-orange-500">
-                        ৳ {product.offeredPrice}
-                      </span>
+                {/* Action Buttons */}
+                <div className="absolute right-3 top-20 flex translate-x-16 flex-col gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/product/${product?._id}`)}
+                    className="btn btn-circle btn-sm border-none bg-white text-black shadow hover:bg-orange-500 hover:text-white"
+                  >
+                    <FaEye />
+                  </button>
 
-                      <span className="text-sm text-gray-400 line-through">
-                        ৳ {product.price}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-xl font-bold text-orange-500">
-                      ৳ {product.price}
-                    </span>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => dispatch(addToCart(product))}
+                    className="btn btn-circle btn-sm border-none bg-white text-black shadow hover:bg-orange-500 hover:text-white"
+                  >
+                    <FaCartPlus />
+                  </button>
                 </div>
 
-                {/* Button */}
-                <button
+                {/* Content */}
+                <div className="p-2">
+                  <Link to={product._id}>
+                    <h2 className="line-clamp-1 text-lg font-semibold transition-colors duration-300 hover:text-orange-500">
+                      {product.name}
+                    </h2>
+                  </Link>
+
+                  {/* Price */}
+                  <div className="mt-3 flex items-center gap-2">
+                    {product.offeredPrice ? (
+                      <>
+                        <span className="text-xl font-bold text-orange-500">
+                          ৳ {product.offeredPrice}
+                        </span>
+
+                        <span className="text-sm text-gray-400 line-through">
+                          ৳ {product.price}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-xl font-bold text-orange-500">
+                        ৳ {product.price}
+                      </span>
+                    )}
+                  </div>
+
+                  {cartItem ? (
+                    // Quantity Controller
+                    <div className="mt-4 flex items-center justify-between rounded-xl border border-orange-400 px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={() => dispatch(decreaseQuantity(product._id))}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 text-lg font-bold text-orange-500 hover:bg-orange-500 hover:text-white"
+                      >
+                        -
+                      </button>
+
+                      <span className="text-lg font-bold">
+                        {cartItem.quantity}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => dispatch(increaseQuantity(product._id))}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 text-lg font-bold text-orange-500 hover:bg-orange-500 hover:text-white"
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    // Add To Cart Button
+                    <button
+                      type="button"
+                      onClick={() => dispatch(addToCart(product))}
+                      className="btn btn-warning mt-4 w-full rounded-xl text-white hover:scale-[1.01]"
+                    >
+                      Add To Cart
+                    </button>
+                  )}
+                  {/* Button */}
+                  {/* <button
+                  type="button"
                   onClick={() => dispatch(addToCart(product))}
                   className="btn btn-warning  mt-4 w-full rounded-xl text-white hover:scale-[1.01]"
                 >
                   Add To Cart
-                </button>
+                </button> */}
+                </div>
               </div>
-            </div>
-          </SwiperSlide>
-        ))}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
 
       {/* Custom Swiper Style */}

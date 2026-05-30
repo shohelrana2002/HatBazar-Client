@@ -65,7 +65,7 @@ const FloatingCart = () => {
           <div className="h-[calc(100%-180px)] space-y-4 overflow-y-auto p-5">
             {carts?.map((cart) => (
               <div
-                key={cart?.id}
+                key={cart?._id}
                 className="flex gap-4 rounded-2xl border border-base-300 p-3"
               >
                 {/* Image */}
@@ -94,7 +94,7 @@ const FloatingCart = () => {
                     <div className="flex items-center gap-2">
                       <button
                         disabled={cart?.quantity === 1}
-                        onClick={() => dispatch(decreaseQuantity(cart?.id))}
+                        onClick={() => dispatch(decreaseQuantity(cart?._id))}
                         className={`flex h-8 w-8 items-center justify-center rounded-lg text-lg font-bold transition-all duration-300 ${
                           cart?.quantity === 1
                             ? "cursor-not-allowed bg-gray-200 text-gray-400"
@@ -109,7 +109,7 @@ const FloatingCart = () => {
                       </span>
 
                       <button
-                        onClick={() => dispatch(increaseQuantity(cart?.id))}
+                        onClick={() => dispatch(increaseQuantity(cart?._id))}
                         className="flex h-8 w-8 items-center justify-center rounded-lg bg-base-200 text-lg font-bold hover:bg-orange-500 hover:text-white"
                       >
                         +
@@ -118,7 +118,7 @@ const FloatingCart = () => {
 
                     {/* Remove */}
                     <button
-                      onClick={() => dispatch(removeCart(cart?.id))}
+                      onClick={() => dispatch(removeCart(cart?._id))}
                       className="text-sm font-medium cursor-pointer text-red-500 hover:underline"
                     >
                       Remove

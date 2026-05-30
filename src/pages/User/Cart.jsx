@@ -68,7 +68,7 @@ const Cart = () => {
                 <div className="mt-3 flex items-center gap-3">
                   <button
                     disabled={cart.quantity === 1}
-                    onClick={() => dispatch(decreaseQuantity(cart.id))}
+                    onClick={() => dispatch(decreaseQuantity(cart._id))}
                     className={`h-8 w-8 rounded bg-gray-200 ${
                       cart.quantity === 1
                         ? "cursor-not-allowed opacity-50"
@@ -81,7 +81,7 @@ const Cart = () => {
                   <span className="font-semibold">{cart.quantity}</span>
 
                   <button
-                    onClick={() => dispatch(increaseQuantity(cart.id))}
+                    onClick={() => dispatch(increaseQuantity(cart._id))}
                     className="h-8 w-8 rounded bg-gray-200 hover:bg-orange-500 hover:text-white"
                   >
                     +
@@ -91,7 +91,7 @@ const Cart = () => {
 
               {/* Remove */}
               <button
-                onClick={() => dispatch(removeCart(cart.id))}
+                onClick={() => dispatch(removeCart(cart._id))}
                 className="text-red-500 hover:text-red-700"
               >
                 <FaTrash />
