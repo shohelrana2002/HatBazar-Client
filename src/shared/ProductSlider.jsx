@@ -18,7 +18,7 @@ const ProductSlider = ({ products }) => {
   const navigate = useNavigate();
   const { carts } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
+  // NO CODE ADD  djj
   if (!products?.length) {
     return (
       <div className="py-10 text-center text-gray-500">No Products Found</div>
