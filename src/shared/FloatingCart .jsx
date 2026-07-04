@@ -63,9 +63,9 @@ const FloatingCart = () => {
 
           {/* Cart Items */}
           <div className="h-[calc(100%-180px)] space-y-4 overflow-y-auto p-5">
-            {carts?.map((cart) => (
+            {carts?.map((cart, index) => (
               <div
-                key={cart?._id}
+                key={index}
                 className="flex gap-4 rounded-2xl border border-base-300 p-3"
               >
                 {/* Image */}
