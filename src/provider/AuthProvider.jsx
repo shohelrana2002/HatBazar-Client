@@ -55,6 +55,15 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
+        await axios.post(
+          "http://localhost:3000/api/auth/jwt",
+          {
+            email: currentUser.email,
+          },
+          {
+            withCredentials: true,
+          },
+        );
         const res = await axios.get(
           `http://localhost:3000/api/users/${currentUser.email}`,
           {
@@ -65,10 +74,17 @@ const AuthProvider = ({ children }) => {
         dispatch(setUser(res?.data?.user));
       } else {
         console.log("User Logout");
-
         dispatch(clearUser());
         setCurrentUser(null);
         dispatch(setUser(null));
+        await axios.post(
+          "http://localhost:3000/api/auth/logout",
+          {},
+          {
+            withCredentials: true,
+          },
+        );
+        await logout();
       }
 
       setLoading(false);

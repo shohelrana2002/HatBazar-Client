@@ -8,6 +8,7 @@ import axios from "axios";
 
 const Checkout = () => {
   const { carts } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.user);
   const {
     register,
     handleSubmit,
@@ -121,6 +122,7 @@ const Checkout = () => {
             <input
               className="input input-bordered w-full"
               placeholder="Full Name"
+              defaultValue={user?.name}
               {...register("name", {
                 required: "Name is required",
               })}
@@ -135,6 +137,7 @@ const Checkout = () => {
             <input
               className="input input-bordered w-full"
               placeholder="Phone Number"
+              defaultValue={`0${user?.phone}`}
               {...register("phone", {
                 required: "Phone number is required",
               })}
@@ -151,7 +154,7 @@ const Checkout = () => {
             <input
               type="email"
               className="input input-bordered w-full"
-              placeholder="Email"
+              defaultValue={user?.email}
               {...register("email")}
             />
           </div>

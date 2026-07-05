@@ -140,7 +140,7 @@ const Register = () => {
                   <FaPhoneAlt />
 
                   <input
-                    type="text"
+                    type="tel"
                     className="grow"
                     placeholder="01XXXXXXXXX"
                     {...register("phone", {

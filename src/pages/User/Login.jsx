@@ -35,7 +35,6 @@ const Login = () => {
     try {
       setLoading(true);
       const res = await loginUser(data.email, data.password);
-
       dispatch(setUser(res?.user));
       toast.success("Login Successful");
       navigate(from, { replace: true });
