@@ -10,10 +10,13 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import saveUser from "../../utils/saveUser";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/features/userSlice/userSlice";
 
 const Login = () => {
   const { loginUser, googleLogin } = useAuth();
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,11 +34,10 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+      const res = await loginUser(data.email, data.password);
 
-      await loginUser(data.email, data.password);
-
+      dispatch(setUser(res?.user));
       toast.success("Login Successful");
-
       navigate(from, { replace: true });
     } catch (error) {
       toast.error(error.message);
@@ -47,11 +49,10 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-
-      await googleLogin();
-
+      const result = await googleLogin();
+      dispatch(setUser(result.user));
+      saveUser(result.user);
       toast.success("Google Login Successful");
-
       navigate(from, { replace: true });
     } catch (error) {
       toast.error(error.message);

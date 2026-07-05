@@ -8,6 +8,7 @@ import {
   increaseQuantity,
 } from "../redux/features/cart/cartSlice";
 import axiosPublic from "../api/axiosPublic";
+import toast from "react-hot-toast";
 
 const AllProducts = () => {
   const { carts } = useSelector((state) => state.cart);
@@ -20,9 +21,9 @@ const AllProducts = () => {
         setLoading(true);
         const { data } = await axiosPublic.get("/api/products");
         setProducts(data.products);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
-        console.log(error);
+        toast.error(error?.message || "Network Error");
         setLoading(false);
       } finally {
         setLoading(false);

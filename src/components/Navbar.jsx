@@ -12,11 +12,15 @@ import {
   FaLocationArrow,
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { LogOutIcon } from "lucide-react";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
+  const { logout } = useAuth();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const { carts } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.user);
   return (
     <div className="shadow-md bg-white">
       <div className="container mx-auto px-2">
@@ -65,10 +69,27 @@ const Navbar = () => {
               <FaLocationArrow />
               <span className="hidden md:block">Track Order</span>
             </Link>
-            <Link className=" flex flex-col items-center" to="/login">
-              <FaUser />
-              <span className="hidden md:block">Sign In</span>
-            </Link>
+            {user ? (
+              <>
+                {" "}
+                <Link
+                  onClick={() => logout()}
+                  className=" flex flex-col items-center"
+                  to="/login"
+                >
+                  <LogOutIcon />
+                  <span className="hidden text-red-500 md:block">LogOut</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Link className=" flex flex-col items-center" to="/login">
+                  <FaUser />
+                  <span className="hidden md:block">Sign In</span>
+                </Link>
+              </>
+            )}
             <Link className=" flex flex-col items-center" to="/whitelist">
               <MdFavoriteBorder size={24} className="font-medium" />
               <span className="hidden md:block">Whitelist</span>

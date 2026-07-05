@@ -12,10 +12,13 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import saveUser from "../../utils/saveUser";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/features/userSlice/userSlice";
 
 const Register = () => {
   const { createUser, updateUserProfile, googleLogin } = useAuth();
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -38,19 +41,20 @@ const Register = () => {
     try {
       setLoading(true);
 
-      const result = await createUser(data.email, data.password);
+      const userData = await createUser(data.email, data.password);
 
       await updateUserProfile({
         displayName: data.name,
       });
-      console.log(result);
-      // Save User to Database
-      // await axios.post("/api/users", {
-      //   name: data.name,
-      //   email: data.email,
-      //   phone: data.phone,
-      // });
 
+      saveUser({
+        displayName: data.name,
+        email: data.email,
+        phoneNumber: data.phone,
+        photoURL: "",
+      });
+
+      dispatch(setUser(userData?.user));
       toast.success("Registration Successful 🎉");
 
       reset();
@@ -68,11 +72,10 @@ const Register = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-
-      await googleLogin();
-
+      const result = await googleLogin();
+      saveUser(result.user);
+      dispatch(setUser(result?.user));
       toast.success("Google Login Successful");
-
       navigate(from, {
         replace: true,
       });

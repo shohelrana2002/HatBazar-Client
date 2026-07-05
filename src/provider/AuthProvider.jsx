@@ -10,15 +10,18 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { clearUser, setUser } from "../redux/features/userSlice/userSlice";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null);
-
 const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   // Register
   const createUser = (email, password) => {
@@ -49,18 +52,33 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  // Current User
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const res = await axios.get(
+          `http://localhost:3000/api/users/${currentUser.email}`,
+          {
+            withCredentials: true,
+          },
+        );
+        setCurrentUser(true);
+        dispatch(setUser(res?.data?.user));
+      } else {
+        console.log("User Logout");
+
+        dispatch(clearUser());
+        setCurrentUser(null);
+        dispatch(setUser(null));
+      }
+
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const authInfo = {
-    user,
+    currentUser,
     loading,
     createUser,
     loginUser,
