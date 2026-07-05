@@ -1,47 +1,95 @@
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import { Link } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { clearCart } from "../../redux/features/cart/cartSlice";
+import axios from "axios";
+
 const Checkout = () => {
   const { carts } = useSelector((state) => state.cart);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const totalPrice = carts.reduce(
     (total, item) => total + (item.offeredPrice || item.price) * item.quantity,
     0,
   );
 
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    postalCode: "",
-  });
+  const onSubmit = async (data) => {
+    const customer = {
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      address: data.address,
+      city: data.city,
+      postalCode: data.postalCode,
+    };
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+    const products = carts.map((item) => ({
+      productId: item._id || item.id,
+      name: item.name,
+      image: item.image,
+      price: item.offeredPrice || item.price,
+      quantity: item.quantity,
+    }));
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log("Order Data:", {
-      customer: form,
-      products: carts,
+    const orderData = {
+      customer,
+      products,
+      paymentMethod: data.payment,
+      paymentStatus: "Pending",
+      orderStatus: "Pending",
+      subtotal: totalPrice,
+      deliveryCharge: 80,
       total: totalPrice + 80,
-    });
+      userEmail: data?.email,
+    };
 
-    alert("Order Placed Successfully 🎉");
+    try {
+      if (data.payment === "Cash on Delivery") {
+        const res = await axios.post(
+          "http://localhost:3000/api/orders",
+          orderData,
+          {
+            withCredentials: true,
+          },
+        );
+
+        if (res.data.success) {
+          toast.success("Order Placed Successfully 🎉");
+          dispatch(clearCart());
+          navigate(`/success-order/${res?.data?.orderId}`);
+        }
+      } else {
+        const res = await axios.post(
+          "http://localhost:3000/api/orders",
+          orderData,
+          {
+            withCredentials: true,
+          },
+        );
+        navigate("/payment", {
+          state: { ...orderData, orderId: res.data.orderId },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
   };
 
-  if (carts?.length === 0) {
+  if (!carts.length) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
         <h2 className="text-3xl font-bold">No Items in Cart 😢</h2>
+
         <Link to="/" className="btn btn-warning mt-5 text-white">
           Go Shopping
         </Link>
@@ -58,96 +106,131 @@ const Checkout = () => {
         <FaArrowLeft />
         Back to Cart
       </Link>
-      <h2 className="text-3xl font-bold mb-6">Checkout</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* LEFT SIDE - FORM */}
+      <h2 className="mb-6 text-3xl font-bold">Checkout</h2>
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {/* LEFT */}
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="space-y-4 rounded-2xl border p-6 shadow-md"
         >
-          <h3 className="text-xl font-bold mb-4">Delivery Address</h3>
+          <h3 className="mb-4 text-xl font-bold">Delivery Address</h3>
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            className="input input-bordered w-full"
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <input
+              className="input input-bordered w-full"
+              placeholder="Full Name"
+              {...register("name", {
+                required: "Name is required",
+              })}
+            />
 
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone Number"
-            className="input input-bordered w-full"
-            onChange={handleChange}
-            required
-          />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+            )}
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email (optional)"
-            className="input input-bordered w-full"
-            onChange={handleChange}
-          />
+          <div>
+            <input
+              className="input input-bordered w-full"
+              placeholder="Phone Number"
+              {...register("phone", {
+                required: "Phone number is required",
+              })}
+            />
 
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            className="input input-bordered w-full"
-            onChange={handleChange}
-            required
-          />
+            {errors.phone && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
 
-          <input
-            type="text"
-            name="city"
-            placeholder="City / District"
-            className="input input-bordered w-full"
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <input
+              type="email"
+              className="input input-bordered w-full"
+              placeholder="Email"
+              {...register("email")}
+            />
+          </div>
 
-          <input
-            type="text"
-            name="postalCode"
-            placeholder="Postal Code"
-            className="input input-bordered w-full"
-            onChange={handleChange}
-          />
+          <div>
+            <input
+              className="input input-bordered w-full"
+              placeholder="Address"
+              {...register("address", {
+                required: "Address is required",
+              })}
+            />
 
-          {/* Payment */}
+            {errors.address && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.address.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <input
+              className="input input-bordered w-full"
+              placeholder="City / District"
+              {...register("city", {
+                required: "City is required",
+              })}
+            />
+
+            {errors.city && (
+              <p className="mt-1 text-sm text-red-500">{errors.city.message}</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              className="input input-bordered w-full"
+              placeholder="Postal Code"
+              {...register("postalCode")}
+            />
+          </div>
+
           <div className="mt-4">
-            <h3 className="font-bold mb-2">Payment Method</h3>
+            <h3 className="mb-2 font-bold">Payment Method</h3>
 
             <label className="flex items-center gap-2">
-              <input type="radio" name="payment" defaultChecked />
+              <input
+                type="radio"
+                value="Cash on Delivery"
+                {...register("payment")}
+                defaultChecked
+              />
               Cash on Delivery (COD)
             </label>
 
-            <label className="flex items-center gap-2 mt-2">
-              <input type="radio" name="payment" />
-              bKash / Nagad (Coming Soon)
+            <label className="mt-2 flex items-center gap-2">
+              <input type="radio" value="bKash" {...register("payment")} />
+              bKash
+            </label>
+
+            <label className="mt-2 flex items-center gap-2">
+              <input type="radio" value="Nagad" {...register("payment")} />
+              Nagad
             </label>
           </div>
 
           <button
             type="submit"
-            className="btn btn-warning w-full text-white mt-4"
+            className="btn btn-warning mt-4 w-full text-white"
           >
             Place Order
           </button>
         </form>
 
-        {/* RIGHT SIDE - ORDER SUMMARY */}
-        <div className="rounded-2xl border p-6 shadow-md h-fit">
-          <h3 className="text-xl font-bold mb-4">Order Summary</h3>
+        {/* RIGHT */}
+        <div className="h-fit rounded-2xl border p-6 shadow-md">
+          <h3 className="mb-4 text-xl font-bold">Order Summary</h3>
 
-          <div className="space-y-3 max-h-60 overflow-y-auto">
+          <div className="max-h-60 space-y-3 overflow-y-auto">
             {carts.map((item) => (
               <div key={item.id} className="flex justify-between text-sm">
                 <span>
@@ -163,17 +246,17 @@ const Checkout = () => {
 
           <hr className="my-4" />
 
-          <div className="flex justify-between mb-2">
+          <div className="mb-2 flex justify-between">
             <span>Subtotal</span>
             <span>৳ {totalPrice}</span>
           </div>
 
-          <div className="flex justify-between mb-2">
+          <div className="mb-2 flex justify-between">
             <span>Delivery</span>
             <span>৳ 80</span>
           </div>
 
-          <div className="flex justify-between text-xl font-bold mt-3">
+          <div className="mt-3 flex justify-between text-xl font-bold">
             <span>Total</span>
             <span>৳ {totalPrice + 80}</span>
           </div>
