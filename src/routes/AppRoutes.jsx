@@ -7,6 +7,12 @@ import Payments from "../payment/Payments";
 import Success from "../payment/Success";
 import Login from "../pages/User/Login";
 import Register from "../pages/User/Register";
+import DashboardLayout from "../layouts/DashboardLayout";
+import PrivateRoute from "./PrivateRoute";
+import AdminRoutes from "./AdminRoutes";
+import DashboardHome from "../pages/Admin/DashboardHome";
+import MangesOrders from "../pages/Admin/MangesOrders";
+import PaymentUpdated from "../pages/Admin/PaymentUpdated";
 
 export const routes = createBrowserRouter([
   {
@@ -32,6 +38,30 @@ export const routes = createBrowserRouter([
       {
         path: "success-order/:orderId",
         element: <Success />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <AdminRoutes>
+          <DashboardLayout />
+        </AdminRoutes>
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <DashboardHome />,
+      },
+      {
+        path: "/dashboard/mange-orders",
+        element: <MangesOrders />,
+      },
+      {
+        path: "/dashboard/payments",
+        element: <PaymentUpdated />,
       },
     ],
   },

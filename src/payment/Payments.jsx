@@ -23,32 +23,7 @@ const Payments = () => {
     navigator.clipboard.writeText(number);
     toast.success("Number Copied");
   };
-  const onSubmit = async (data) => {
-    try {
-      setIsSubmitting(true);
 
-      const res = await axios.patch(
-        `http://localhost:3000/api/orders/${state.orderId}/payment`,
-        {
-          senderNumber: data.senderNumber,
-          transactionId: data.transactionId,
-        },
-        {
-          withCredentials: true,
-        },
-      );
-
-      if (res.data.success) {
-        toast.success("Payment Submitted Successfully");
-        dispatch(clearCart());
-        // navigate("/payment-pending");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed");
-      setIsSubmitting(false);
-    }
-  };
   useEffect(() => {
     const interval = setInterval(async () => {
       const res = await axios.get(
@@ -57,16 +32,40 @@ const Payments = () => {
           withCredentials: true,
         },
       );
-      console.log(res.data.order.paymentStatus);
-      if (res.data.order.paymentStatus === "Paid") {
-        toast.success("Payment Verified");
 
+      if (res?.data?.order?.paymentStatus === "Approved") {
+        toast.success("Payment Verified");
         navigate(`/success-order/${res?.data?.order?.orderId}`);
       }
     }, 5000);
 
     return () => clearInterval(interval);
   }, [navigate, state?.orderId]);
+
+  const onSubmit = async (data) => {
+    try {
+      setIsSubmitting(true);
+      const res = await axios.patch(
+        `http://localhost:3000/api/orders/${state.orderId}/payment`,
+        {
+          senderNumber: data?.senderNumber,
+          transactionId: data?.transactionId,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (res?.data?.success) {
+        toast.success("Payment Submitted Successfully");
+        dispatch(clearCart());
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed");
+      setIsSubmitting(false);
+    }
+  };
 
   //   const onSubmit = async (data) => {
   //     try {

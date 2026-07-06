@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BiMenuAltLeft } from "react-icons/bi";
-import { MdFavoriteBorder } from "react-icons/md";
+import {
+  MdDashboard,
+  MdFavoriteBorder,
+  MdManageAccounts,
+  MdPayment,
+} from "react-icons/md";
 import logo from "/logo.png";
 import {
   FaSearch,
@@ -63,70 +68,124 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* 🛒 Right */}
-          <div className="flex items-center gap-4 shrink-0">
-            <Link className=" flex  flex-col items-center" to="/trackOrder">
-              <FaLocationArrow />
-              <span className="hidden md:block">Track Order</span>
-            </Link>
-            {user ? (
-              <>
-                {" "}
+          {user?.role !== "admin" && (
+            <>
+              {/* 🛒 Right */}
+              <div className="flex items-center gap-4 shrink-0">
+                <Link className=" flex  flex-col items-center" to="/trackOrder">
+                  <FaLocationArrow />
+                  <span className="hidden md:block">Track Order</span>
+                </Link>
+                {user ? (
+                  <>
+                    <button
+                      onClick={() => logout()}
+                      className=" flex cursor-pointer flex-col items-center"
+                      type="button"
+                    >
+                      <LogOutIcon />
+                      <span className="hidden text-red-500 md:block">
+                        LogOut
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link className=" flex flex-col items-center" to="/login">
+                      <FaUser />
+                      <span className="hidden md:block">Sign In</span>
+                    </Link>
+                  </>
+                )}
+                <Link className=" flex flex-col items-center" to="/whitelist">
+                  <MdFavoriteBorder size={24} className="font-medium" />
+                  <span className="hidden md:block">Whitelist</span>
+                </Link>
+
                 <Link
-                  onClick={() => logout()}
-                  className=" flex flex-col items-center"
-                  to="/login"
+                  to="/cart"
+                  className="flex flex-col items-center relative"
                 >
-                  <LogOutIcon />
-                  <span className="hidden text-red-500 md:block">LogOut</span>
+                  <FaShoppingCart />
+                  <span className="absolute -top-3 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+                    {carts?.length}
+                  </span>
+                  <span className="hidden md:block">Cart</span>
                 </Link>
-              </>
-            ) : (
-              <>
-                {" "}
-                <Link className=" flex flex-col items-center" to="/login">
-                  <FaUser />
-                  <span className="hidden md:block">Sign In</span>
+
+                {/* 🔥 MORE DROPDOWN */}
+                <div className="relative group hidden md:block">
+                  <span className="font-medium ">
+                    <BiMenuAltLeft size={36} />
+                  </span>
+                  <button className="">More ▾</button>
+
+                  <ul className="absolute right-0 hidden group-hover:block bg-white shadow-lg mt-2 rounded w-40 z-50">
+                    <li className="px-4 py-2 hover:bg-gray-100">
+                      <Link to="/offers">Offers</Link>
+                    </li>
+                    <li className="px-4 py-2 hover:bg-gray-100">
+                      <Link to="/contact">Contact</Link>
+                    </li>
+                    <li className="px-4 py-2 hover:bg-gray-100">
+                      <Link to="/about">About</Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </>
+          )}
+          {/* ========= Admin Routes ===== */}
+          {user?.role === "admin" && (
+            <>
+              {/* 🛒 Right */}
+              <div className="flex items-center gap-4 shrink-0">
+                <Link className=" flex  flex-col items-center" to="/dashboard">
+                  <MdDashboard size={24} />
+                  <span className="hidden md:block">Dashboard</span>
                 </Link>
-              </>
-            )}
-            <Link className=" flex flex-col items-center" to="/whitelist">
-              <MdFavoriteBorder size={24} className="font-medium" />
-              <span className="hidden md:block">Whitelist</span>
-            </Link>
 
-            <Link to="/cart" className="flex flex-col items-center relative">
-              <FaShoppingCart />
-              <span className="absolute -top-3 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
-                {carts?.length}
-              </span>
-              <span className="hidden md:block">Cart</span>
-            </Link>
+                <Link className=" flex flex-col items-center" to="/whitelist">
+                  <MdManageAccounts size={24} className="font-medium" />
+                  <span className="hidden md:block">Manage Orders</span>
+                </Link>
 
-            {/* 🔥 MORE DROPDOWN */}
-            <div className="relative group hidden md:block">
-              <span className="font-medium ">
-                <BiMenuAltLeft size={36} />
-              </span>
-              <button className="">More ▾</button>
+                <Link
+                  to="/cart"
+                  className="flex flex-col items-center relative"
+                >
+                  <MdPayment size={24} />
+                  <span className="hidden md:block">Payment</span>
+                </Link>
 
-              <ul className="absolute right-0 hidden group-hover:block bg-white shadow-lg mt-2 rounded w-40 z-50">
-                <li className="px-4 py-2 hover:bg-gray-100">
-                  <Link to="/offers">Offers</Link>
-                </li>
-                <li className="px-4 py-2 hover:bg-gray-100">
-                  <Link to="/contact">Contact</Link>
-                </li>
-                <li className="px-4 py-2 hover:bg-gray-100">
-                  <Link to="/about">About</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
+                {user ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => logout()}
+                      className=" flex cursor-pointer flex-col items-center"
+                    >
+                      <LogOutIcon />
+                      <span className="hidden text-red-500 md:block">
+                        LogOut
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link className=" flex flex-col items-center" to="/login">
+                      <FaUser />
+                      <span className="hidden md:block">Sign In</span>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* 📱 MOBILE MENU */}
-        {mobileMenu && (
+        {/*  MOBILE MENU */}
+        {user?.role !== "admin" && mobileMenu && (
           <div className="md:hidden bg-white shadow-md mt-2 p-3 rounded">
             <ul className="flex flex-col gap-2">
               <li>
@@ -136,7 +195,7 @@ const Navbar = () => {
                 <Link to="/shop">Shop</Link>
               </li>
 
-              {/* 🔥 Mobile More */}
+              {/* Mobile More */}
               <li className="border-t pt-2 font-semibold">More</li>
               <li>
                 <Link to="/offers">Offers</Link>
@@ -146,6 +205,22 @@ const Navbar = () => {
               </li>
               <li>
                 <Link to="/about">About</Link>
+              </li>
+            </ul>
+          </div>
+        )}
+        {/* Admin Routes Mobile Views  MOBILE MENU */}
+        {user?.role === "admin" && mobileMenu && (
+          <div className="md:hidden bg-white shadow-md mt-2 p-3 rounded">
+            <ul className="flex flex-col gap-2">
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/mange-orders">Mange Orders</Link>
+              </li>
+              <li>
+                <Link to="/mange-payments">Payments Orders</Link>
               </li>
             </ul>
           </div>
