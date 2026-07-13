@@ -13,6 +13,7 @@ import { auth } from "../firebase/firebase.config";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { clearUser, setUser } from "../redux/features/userSlice/userSlice";
+import { socket } from "../socket/socket";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null);
@@ -55,6 +56,10 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
+        socket.emit("join", currentUser?.email);
+
+        console.log("JOIN:", currentUser.email);
+
         await axios.post(
           "http://localhost:3000/api/auth/jwt",
           {
@@ -71,6 +76,7 @@ const AuthProvider = ({ children }) => {
           },
         );
         setCurrentUser(true);
+
         dispatch(setUser(res?.data?.user));
       } else {
         console.log("User Logout");

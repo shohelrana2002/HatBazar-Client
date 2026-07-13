@@ -78,16 +78,13 @@ const Navbar = () => {
                 </Link>
                 {user ? (
                   <>
-                    <button
-                      onClick={() => logout()}
-                      className=" flex cursor-pointer flex-col items-center"
-                      type="button"
+                    <Link
+                      className=" flex flex-col items-center"
+                      to="/user/dashboard"
                     >
-                      <LogOutIcon />
-                      <span className="hidden text-red-500 md:block">
-                        LogOut
-                      </span>
-                    </button>
+                      <FaUser />
+                      <span className="hidden md:block">Account</span>
+                    </Link>
                   </>
                 ) : (
                   <>

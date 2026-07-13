@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import {
@@ -11,16 +11,14 @@ import {
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import saveUser from "../../utils/saveUser";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/features/userSlice/userSlice";
-import { socket } from "../../socket/socket";
 
 const Login = () => {
   const { loginUser, googleLogin } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useSelector((state) => state.user);
   const from = location.state?.from?.pathname || "/";
 
   const [showPassword, setShowPassword] = useState(false);
@@ -60,11 +58,7 @@ const Login = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    if (user?.email) {
-      socket.emit("join", user.email);
-    }
-  }, [user]);
+
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">

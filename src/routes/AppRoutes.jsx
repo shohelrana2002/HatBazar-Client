@@ -13,6 +13,9 @@ import AdminRoutes from "./AdminRoutes";
 import DashboardHome from "../pages/Admin/DashboardHome";
 import MangesOrders from "../pages/Admin/MangesOrders";
 import PaymentUpdated from "../pages/Admin/PaymentUpdated";
+import UserDashboard from "../pages/User/UserDashboard";
+import Dashboard from "../pages/User/Dashboard";
+import MyOrders from "../pages/User/MyOrders";
 
 export const routes = createBrowserRouter([
   {
@@ -36,8 +39,34 @@ export const routes = createBrowserRouter([
         element: <Payments />,
       },
       {
+        path: "payment",
+        element: <Payments />,
+      },
+      {
         path: "success-order/:orderId",
         element: <Success />,
+      },
+      {
+        path: "user/dashboard",
+        element: <UserDashboard />,
+      },
+    ],
+  },
+  {
+    path: "/user/dashboard",
+    element: (
+      <PrivateRoute>
+        <UserDashboard />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: "my-orders",
+        element: <MyOrders />,
       },
     ],
   },
