@@ -3,7 +3,7 @@ import axiosPublic from "../../api/axiosPublic";
 import { FaBoxOpen, FaCalendarAlt, FaMoneyBillWave } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { socket } from "../../socket/socket";
-
+// test
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ const MyOrders = () => {
       const { data } = await axiosPublic.get("/api/orders/my-orders", {
         withCredentials: true,
       });
-
+      console.log(data);
       setOrders(data.orders || data);
     } catch (error) {
       console.log(error);
