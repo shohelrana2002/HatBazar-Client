@@ -3,7 +3,6 @@ import axiosPublic from "../../api/axiosPublic";
 import { FaBoxOpen, FaCalendarAlt, FaMoneyBillWave } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { socket } from "../../socket/socket";
-// ra
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -56,7 +56,7 @@ const Cart = () => {
                 className="h-24 w-24 rounded-xl object-cover"
               />
 
-              {/* Info */}
+              {/* Info details*/}
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">{cart.name}</h3>
 
